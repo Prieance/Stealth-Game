@@ -15,12 +15,12 @@ TagManager:
   - UI
   - 
   - 
-  - Wall
+  - R_Wall
   - Target
   - Player
-  - 
-  - 
-  - 
+  - A_Wall
+  - R_Floor
+  - A_Floor
   - 
   - 
   - 

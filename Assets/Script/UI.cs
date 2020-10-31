@@ -9,12 +9,19 @@ public class UI : MonoBehaviour
     public GameObject LoseUI;
     bool GameOver;
     PlayerMove playerScript;
+    SwitchingWorld switchScript;
+
+    public GameObject Transition;
+    public GameObject end;
+    bool Switching;
     
     void Start()
     {
         playerScript = FindObjectOfType<PlayerMove>();
+        switchScript = FindObjectOfType<SwitchingWorld>();
         playerScript.PlayerHasWon += YouWin;
         playerScript.PlayerIsCaught += YouLose;
+        switchScript.SwitchReal += Switch;
     }
 
    
@@ -26,6 +33,12 @@ public class UI : MonoBehaviour
             {
                 SceneManager.LoadScene(0);
             }
+        }
+
+        if (Switching)
+        {
+            Transition.transform.position = Vector3.MoveTowards(Transition.transform.position, end.transform.position, 5 * Time.deltaTime);
+            Switching = false;
         }
     }
 
@@ -45,5 +58,10 @@ public class UI : MonoBehaviour
         GameOver = true;
         playerScript.PlayerHasWon -= YouWin;
         playerScript.PlayerIsCaught -= YouLose;
+    }
+
+    void Switch()
+    {
+        Switching = true;
     }
 }

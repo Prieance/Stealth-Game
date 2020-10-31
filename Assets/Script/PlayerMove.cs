@@ -8,13 +8,17 @@ public class PlayerMove : MonoBehaviour
     public event System.Action PlayerIsCaught;
 
     public float MoveSpeed = 0;
+    public float CrouchSpeed = 0;
+    public float SprintSpeed = 0;
     public float smoothMoveTime = .1f;
     public float turnSpeed = 90;
 
     Rigidbody rb;
 
     Vector3 velocity;
-    public Transform cam;
+    public Transform camA;
+    public Transform camR;
+    Transform cam;
 
     float angle;
     public float targetAngle;
@@ -24,6 +28,7 @@ public class PlayerMove : MonoBehaviour
     float vertical = 0;
 
     bool Caught;
+    bool Crouch;
     
     void Start()
     {
@@ -35,6 +40,19 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         Vector3 inputDirection = Vector3.zero;
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Crouch = !Crouch;
+        }
+
+        if (camA.gameObject.activeSelf)
+        {
+            cam = camA;
+        }
+        else if (camR.gameObject.activeSelf)
+        {
+            cam = camR;
+        }
         
         if (!Caught)
         {
@@ -48,15 +66,27 @@ public class PlayerMove : MonoBehaviour
         }
         inputDirection = new Vector3(horizontal, 0, vertical).normalized;
         float inputMagnitude = inputDirection.magnitude;
-
         
+
         targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
         angle = Mathf.LerpAngle(angle, targetAngle, Time.deltaTime * turnSpeed * inputMagnitude);
 
         if (inputDirection.magnitude >= 0.1f)
         {
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            velocity = moveDir * MoveSpeed;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                velocity = moveDir * SprintSpeed;
+                Crouch = false;
+            }
+            else if (Crouch)
+            {
+                velocity = moveDir * CrouchSpeed;
+            }
+            else
+            {
+                velocity = moveDir * MoveSpeed;
+            }
         }
         else
         {
