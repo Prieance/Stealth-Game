@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
+    public static System.Action ForceBack;
+    public GameObject sliderObj;
+    Slider slider;
+
     public GameObject WinUI;
     public GameObject LoseUI;
     bool GameOver;
     PlayerMove playerScript;
-    SwitchingWorld switchScript;
 
-    public GameObject Transition;
-    public GameObject end;
     bool Switching;
     
     void Start()
     {
+        slider = sliderObj.GetComponent<Slider>();
         playerScript = FindObjectOfType<PlayerMove>();
-        switchScript = FindObjectOfType<SwitchingWorld>();
         playerScript.PlayerHasWon += YouWin;
         playerScript.PlayerIsCaught += YouLose;
-        switchScript.SwitchReal += Switch;
+        SwitchingWorld.SwitchWorld += Switch;
     }
 
    
@@ -33,13 +35,13 @@ public class UI : MonoBehaviour
             {
                 SceneManager.LoadScene(0);
             }
+            else if (Input.GetKeyDown(KeyCode.Escape) | Input.GetKeyDown(KeyCode.E))
+            {
+                Application.Quit();
+            }
         }
 
-        if (Switching)
-        {
-            Transition.transform.position = Vector3.MoveTowards(Transition.transform.position, end.transform.position, 5 * Time.deltaTime);
-            Switching = false;
-        }
+        StaminaDrain(Time.deltaTime);
     }
 
     void YouLose()
@@ -62,6 +64,35 @@ public class UI : MonoBehaviour
 
     void Switch()
     {
-        Switching = true;
+        Switching = !Switching;
+    }
+
+    void StaminaDrain(float amount)
+    {
+        if (Switching)
+        {
+            sliderObj.SetActive(true);
+            float temp = slider.value;
+            temp -= amount;
+            slider.value = temp;
+            if(slider.value == slider.minValue)
+            {
+                if(ForceBack != null)
+                {
+                    ForceBack();
+                }
+                Switch();
+            }
+        }
+        else if (!Switching)
+        {
+            float temp = slider.value;
+            temp += amount;
+            slider.value = temp;
+            if(slider.value == slider.maxValue)
+            {
+                sliderObj.SetActive(false);
+            }
+        }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EnemyMove : MonoBehaviour
 {
     public Transform path;
     public GameObject player;
-    public NavMeshAgent AI;
 
     public EnemyFOV FOVScript;
     public float moveSpeed = 5;
@@ -67,7 +65,6 @@ public class EnemyMove : MonoBehaviour
 
         while (playerSpotted)
         {
-            AI.SetDestination(player.transform.position);
             yield return null;
         }
     }

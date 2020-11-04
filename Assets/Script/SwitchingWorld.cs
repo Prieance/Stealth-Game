@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class SwitchingWorld : MonoBehaviour
 {
-    public event System.Action SwitchAstral;
-    public event System.Action SwitchReal;
+    public static event System.Action SwitchWorld;
 
     bool Switched = false;
-    public Camera RealCam;
-    public Camera AstralCam;
+
+    public GameObject Real;
+    public GameObject Astral;
 
     void Start()
     {
-        AstralCam.enabled = false;
+        Astral.SetActive(false);
+        UI.ForceBack += ForceIntoReal;
     }
 
     void Update()
@@ -24,34 +25,33 @@ public class SwitchingWorld : MonoBehaviour
             if (!Switched)
             {
                 Switched = true;
-                if(SwitchAstral != null)
-                {
-                    SwitchAstral();
-                    SwitchReal = null;
-                }
-
-                SetCam(AstralCam,RealCam);
+                Setlevel(Astral, Real);
                 Debug.Log("Flip");
             }
             else if (Switched)
             {
                 Switched = false;
-                if(SwitchReal != null)
-                {
-                    SwitchReal();
-                    SwitchAstral = null;
-                }
-                
-                
-                SetCam(RealCam,AstralCam);
+                Setlevel(Real, Astral);
                 Debug.Log("Flop");
+            }
+
+            if (SwitchWorld != null)
+            {
+                SwitchWorld();
             }
         }
     }
 
-    void SetCam(Camera activate,Camera deactivate)
+    void Setlevel(GameObject activate, GameObject deactivate)
     {
-        activate.enabled = true;
-        deactivate.enabled = false;
+        activate.SetActive(true);
+        deactivate.SetActive(false);
+    }
+    
+    void ForceIntoReal()
+    {
+        Switched = false;
+        Setlevel(Real, Astral);
+        Debug.Log("ForcedFlop");
     }
 }

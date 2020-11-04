@@ -16,9 +16,7 @@ public class PlayerMove : MonoBehaviour
     Rigidbody rb;
 
     Vector3 velocity;
-    public Transform camA;
-    public Transform camR;
-    Transform cam;
+    public Transform cam;
 
     float angle;
     public float targetAngle;
@@ -43,15 +41,6 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             Crouch = !Crouch;
-        }
-
-        if (camA.gameObject.activeSelf)
-        {
-            cam = camA;
-        }
-        else if (camR.gameObject.activeSelf)
-        {
-            cam = camR;
         }
         
         if (!Caught)
@@ -91,6 +80,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             velocity = Vector3.zero;
+            //new Vector3(0, rb.velocity.y, 0)
         }
     }
 

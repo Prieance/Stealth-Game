@@ -10,9 +10,4 @@ public class LevelSetter : MonoBehaviour
     {
         Astral.transform.position = Real.transform.position;
     }
-
-    void Update()
-    {
-        
-    }
 }
